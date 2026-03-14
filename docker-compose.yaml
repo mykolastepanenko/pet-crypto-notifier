@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  notifier:
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile
+    container_name: app-notifier
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql-notifier
+      - redis-notifier
+    networks:
+      - crypto-network
+
+  mysql-notifier:
+    image: mysql:8.4
+    container_name: app-mysql-notifier
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - notifier_crypto_mysql:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - crypto-network
+
+  redis-notifier:
+    image: redis:8.6
+    container_name: app-redis-notifier
+    ports:
+      - "6380:6379"
+    networks:
+      - crypto-network
+
+volumes:
+  notifier_crypto_mysql:
+
+networks:
+  crypto-network:
+    external: true
