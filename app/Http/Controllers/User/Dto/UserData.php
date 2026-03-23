@@ -11,4 +11,9 @@ final class UserData extends Data
         public readonly string $email,
         public readonly string $password,
     ) {}
+
+    public static function authorize(): bool
+    {
+        return true;
+    }
 }

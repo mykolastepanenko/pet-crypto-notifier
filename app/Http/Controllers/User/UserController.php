@@ -7,6 +7,7 @@ use App\Http\Controllers\User\Dto\UserData;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,15 +32,17 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(/*StoreUserRequest $request, */ UserData $dto)
+    public function store(UserData $dto)
     {
-        $user = new User([
-            'name' => $dto->name,
-            'email' => $dto->email,
-            'password' => $dto->password,
-        ]);
+        $user = new User($dto->toArray());
         $can = request()->user()?->can('create', $user);
-        $user->save();
+
+        try {
+            $user->save();
+        } catch (UniqueConstraintViolationException $exception) {
+            return response()->json('User already exists', Response::HTTP_CONFLICT);
+        }
+
         return response()->json('User created', Response::HTTP_CREATED);
     }
 
