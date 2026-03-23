@@ -7,14 +7,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
-        "ext-redis": "*",
         "ext-amqp": "*",
+        "ext-intl": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
-        "ext-intl": "*",
+        "ext-redis": "*",
         "ext-sockets": "*",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "spatie/laravel-data": "^4.20",
         "vladimir-yuldashev/laravel-queue-rabbitmq": "^14.4"
     },
     "require-dev": {

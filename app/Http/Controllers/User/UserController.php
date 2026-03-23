@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\User\Dto\UserData;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -20,17 +23,24 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): JsonResponse
     {
-        //
+        return response()->json('ok');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
+    public function store(/*StoreUserRequest $request, */ UserData $dto)
     {
-        //
+        $user = new User([
+            'name' => $dto->name,
+            'email' => $dto->email,
+            'password' => $dto->password,
+        ]);
+        $can = request()->user()?->can('create', $user);
+        $user->save();
+        return response()->json('User created', Response::HTTP_CREATED);
     }
 
     /**
